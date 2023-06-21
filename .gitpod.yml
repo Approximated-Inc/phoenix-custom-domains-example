@@ -1,0 +1,49 @@
+image:
+  file: .gitpod.Dockerfile
+
+# List the ports you want to expose and what to do when they are served. See https://www.gitpod.io/docs/43_config_ports/
+ports:
+  - port: 3000
+    onOpen: open-browser
+    visibility: private
+  - port: 5432
+    visibility: private
+    onOpen: ignore
+
+tasks:
+  - name: phoenix
+    init: >
+      asdf install &&
+      asdf global erlang 25.3 &&
+      asdf global elixir 1.15.0-otp-25 &&
+      asdf global nodejs 14.17.6 &&
+      mix local.rebar --force &&
+      mix local.hex --force &&
+      mix deps.get &&
+      mix compile &&
+      MIX_ENV=test mix compile &&
+      npm install --save --prefix assets &&
+      echo "Init tasks complete!"
+    command: >
+      cd $GITPOD_REPO_ROOT &&
+      mix local.rebar --force &&
+      mix local.hex --force &&
+      mix ecto.create &&
+      mix ecto.migrate &&
+      iex -S mix phx.server
+github:
+  prebuilds:
+    # enable for the default branch (defaults to true)
+    master: true
+    # enable for all branches in this repo (defaults to false)
+    branches: true
+    # enable for pull requests coming from this repo (defaults to true)
+    pullRequests: false
+    # enable for pull requests coming from forks (defaults to false)
+    pullRequestsFromForks: false
+    # add a check to pull requests (defaults to true)
+    addCheck: true
+    # add a "Review in Gitpod" button as a comment to pull requests (defaults to false)
+    addComment: false
+    # add a "Review in Gitpod" button to the pull request's description (defaults to false)
+    addBadge: true
