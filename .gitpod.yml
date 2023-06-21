@@ -26,6 +26,7 @@ tasks:
       echo "Init tasks complete!"
     command: >
       cd $GITPOD_REPO_ROOT &&
+      asdf install && 
       mix local.rebar --force &&
       mix local.hex --force &&
       mix ecto.create &&

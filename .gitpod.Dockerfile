@@ -64,5 +64,5 @@ RUN set -ex; \
     asdf plugin-add elixir https://github.com/asdf-vm/asdf-elixir.git; \
     asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git; \
     asdf install erlang 25.3; \
-    asdf install elixir 1.15.0-otp-24; \
+    asdf install elixir 1.15.0-otp-25; \
     asdf install nodejs 14.17.6;"
