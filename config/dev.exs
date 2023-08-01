@@ -7,6 +7,18 @@ config :blogz,
 config :blogz, Blogz.Repo,
   database: "blogz.db"
 
+# making this nice to use in gitpod, feel free to change for your dev env
+workspace_domain =
+  cond do
+    !is_nil(System.get_env("GITPOD_WORKSPACE_URL")) ->
+      String.replace(System.get_env("GITPOD_WORKSPACE_URL"), "https://", "4000-")
+    true ->
+      "localhost"
+  end
+
+config :blogz,
+  primary_domains: [System.get_env("BLOGZ_PRIMARY_DOMAIN", "localhost"), "www.#{System.get_env("BLOGZ_PRIMARY_DOMAIN", "localhost")}", workspace_domain]
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #

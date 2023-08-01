@@ -25,7 +25,7 @@ defmodule BlogzWeb.Router do
   # Inside it are the usual scopes and routes for your app.
   # After this, we'll have a scope that catches requests with any other hosts, for custom domains.
   # Example primary hosts list (set in env): ["www.yourapp.com", "yourapp.com", "localhost"]
-  scope "/", BlogzWeb, host: Application.get_env(:blogz, :primary_hosts, ["localhost"]) do
+  scope "/", BlogzWeb, host: Application.compile_env(:blogz, :primary_domains, ["localhost"]) do
     # don't set any pipelines or plugs at this scope level (here),
     # unless you want it to apply to all of them nested inside this.
 
@@ -35,25 +35,7 @@ defmodule BlogzWeb.Router do
       get "/", PageController, :home
     end
 
-    # Enable LiveDashboard and Swoosh mailbox preview in development
-    if Application.compile_env(:blogz, :dev_routes) do
-      # If you want to use the LiveDashboard in production, you should put
-      # it behind authentication and allow only admins to access it.
-      # If your application does not have an admins-only section yet,
-      # you can use Plug.BasicAuth to set up some basic authentication
-      # as long as you are also using SSL (which you should anyway).
-      import Phoenix.LiveDashboard.Router
-
-      scope "/dev" do
-        pipe_through :browser
-
-        live_dashboard "/dashboard", metrics: BlogzWeb.Telemetry
-        forward "/mailbox", Plug.Swoosh.MailboxPreview
-      end
-    end
-
     ## Default phx.gen.auth routes
-
     scope "/" do
       pipe_through [:browser, :redirect_if_user_is_authenticated]
 
@@ -94,9 +76,9 @@ defmodule BlogzWeb.Router do
   # A catch-all scope for any other hosts (custom domains)
   scope "/", BlogzWeb do
     pipe_through [:browser, :custom_domains]
-    live_session :custom_domain_blog, on_mount: [{BlogzWeb.LiveviewCustomDomains, :load_blog_by_custom_domain}] do
-      live "/", CustomDomainBlogLive, :index
-      live "/:post_slug", CustomDomainBlogLive, :index
+    live_session :custom_domain_blog, on_mount: [{BlogzWeb.LiveviewCustomDomains, :assign_custom_domain}] do
+      live "/", BlogLive, :index
+      live "/:post_slug", BlogPostLive, :index
     end
   end
 
