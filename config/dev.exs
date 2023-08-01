@@ -1,14 +1,11 @@
 import Config
 
 # Configure your database
+config :blogz,
+  ecto_repos: [Blogz.Repo]
+
 config :blogz, Blogz.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
-  database: "blogz_dev",
-  stacktrace: true,
-  show_sensitive_data_on_connection_error: true,
-  pool_size: 10
+  database: "blogz.db"
 
 # For development, we disable any cache and enable
 # debugging and code reloading.
