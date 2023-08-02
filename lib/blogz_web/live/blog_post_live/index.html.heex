@@ -1,0 +1,62 @@
+<.header>
+  <%= @blog.name %>
+  <:subtitle><%= @blog.custom_domain %></:subtitle>
+  <:actions>
+    <%= if assigns[:current_user] do %>
+      <.link patch={~p"/blogs/#{@blog_id}/posts/new"}>
+        <.button>New Blog post</.button>
+      </.link>
+      <.link patch={~p"/blogs/#{@blog_id}/edit"} phx-click={JS.push_focus()}>
+        <.button>Edit blog</.button>
+      </.link>
+    <% end %>
+  </:actions>
+</.header>
+
+<%= if @current_user do %>
+  <.table
+    id="blog_posts"
+    rows={@streams.blog_posts}
+    row_click={fn {_id, blog_post} -> JS.navigate(~p"/blogs/#{@blog_id}/posts/#{blog_post}") end}
+  >
+    <:col :let={{_id, blog_post}} label="Title"><%= blog_post.title %></:col>
+    <:col :let={{_id, blog_post}} label="Content"><%= blog_post.content %></:col>
+    <:action :let={{_id, blog_post}}>
+      <div class="sr-only">
+        <.link navigate={~p"/blogs/#{@blog_id}/posts/#{blog_post}"}>Show</.link>
+      </div>
+      <.link patch={~p"/blogs/#{@blog_id}/posts/#{blog_post}/edit"}>Edit</.link>
+    </:action>
+    <:action :let={{id, blog_post}}>
+      <.link
+        phx-click={JS.push("delete", value: %{id: blog_post.id}) |> hide("##{id}")}
+        data-confirm="Are you sure?"
+      >
+        Delete
+      </.link>
+    </:action>
+  </.table>
+<% else %>
+  <%= for {dom_id, post} <- @streams.blog_posts do %>
+    <div id={dom_id} class="pt-4 mt-4 max-w-3xl border-t">
+      <div class=""><%= post.title %></div>
+      <div class="text-sm mt-1 mb-2 text-gray-500"><%= "#{String.slice(post.content, 0..140)}..." %></div>
+      <.link class="text-xs text-gray-500 hover:text-gray-800" navigate={~p"/blogs/#{@blog_id}/posts/#{post.id}"}>Read Post</.link>
+    </div>
+  <% end %>
+<% end %>
+
+<.modal :if={@live_action in [:new, :edit]} id="blog_post-modal" show on_cancel={JS.navigate(~p"/blogs/#{@blog_id}")}>
+  <.live_component
+    module={BlogzWeb.BlogPostLive.FormComponent}
+    id={@blog_post.id || :new}
+    title={@page_title}
+    action={@live_action}
+    blog_post={@blog_post}
+    blog_id={@blog_id}
+    user_id={@current_user.id}
+    patch={~p"/blogs/#{@blog_id}"}
+  />
+</.modal>
+
+<.back navigate={~p"/"}>Back to blog list</.back>

@@ -51,7 +51,8 @@ defmodule Blogz.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:ecto_sqlite3, "~> 0.10"}
+      {:ecto_sqlite3, "~> 0.10"},
+      {:slugy, "~> 4.1.0"}
     ]
   end
 

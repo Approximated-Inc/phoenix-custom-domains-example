@@ -1,0 +1,29 @@
+<.header>
+  Blog <%= @blog.id %>
+  <:subtitle>This is a blog record from your database.</:subtitle>
+  <:actions>
+    <%= if assigns[:current_user] do %>
+      <.link patch={~p"/blogs/#{@blog}/edit"} phx-click={JS.push_focus()}>
+        <.button>Edit blog</.button>
+      </.link>
+    <% end %>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @blog.name %></:item>
+  <:item title="Custom domain"><%= @blog.custom_domain %></:item>
+</.list>
+
+<.back navigate={~p"/blogs"}>Back to blogs</.back>
+
+<.modal :if={@live_action == :edit} id="blog-modal" show on_cancel={JS.patch(~p"/blogs/#{@blog}")}>
+  <.live_component
+    module={BlogzWeb.BlogLive.FormComponent}
+    id={@blog.id}
+    title={@page_title}
+    action={@live_action}
+    blog={@blog}
+    patch={~p"/blogs/#{@blog}"}
+  />
+</.modal>

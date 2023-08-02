@@ -1,0 +1,56 @@
+<.header>
+  Listing Blogs
+    <:actions>
+      <%= if assigns[:current_user] do %>
+        <.link patch={~p"/blogs/new"}>
+          <.button>New Blog</.button>
+        </.link>
+      <% end %>
+    </:actions>
+</.header>
+
+<%= if assigns[:current_user] do %>
+  <.table
+    id="blogs"
+    rows={@streams.blogs}
+    row_click={fn {_id, blog} -> JS.navigate(~p"/blogs/#{blog}") end}
+  >
+    <:col :let={{_id, blog}} label="Name"><%= blog.name %></:col>
+    <:col :let={{_id, blog}} label="Custom domain"><%= blog.custom_domain %></:col>
+    <:action :let={{_id, blog}}>
+      <div class="sr-only">
+        <.link navigate={~p"/blogs/#{blog}"}>Show</.link>
+      </div>
+      <.link patch={~p"/blogs/#{blog}/edit"}>Edit</.link>
+    </:action>
+      <:action :let={{id, blog}}>
+        <.link
+          phx-click={JS.push("delete", value: %{id: blog.id}) |> hide("##{id}")}
+          data-confirm="Are you sure?"
+        >
+          Delete
+        </.link>
+      </:action>
+  </.table>
+<% else %>
+  <.table
+    id="blogs"
+    rows={@streams.blogs}
+    row_click={fn {_id, blog} -> JS.navigate(~p"/blogs/#{blog}") end}
+  >
+    <:col :let={{_id, blog}} label="Name"><%= blog.name %></:col>
+    <:col :let={{_id, blog}} label="Custom domain"><%= blog.custom_domain %></:col>
+  </.table>
+<% end %>
+
+<.modal :if={@live_action in [:new, :edit]} id="blog-modal" show on_cancel={JS.patch(~p"/blogs")}>
+  <.live_component
+    module={BlogzWeb.BlogLive.FormComponent}
+    id={@blog.id || :new}
+    title={@page_title}
+    action={@live_action}
+    blog={@blog}
+    user_id={@current_user.id}
+    patch={~p"/blogs"}
+  />
+</.modal>

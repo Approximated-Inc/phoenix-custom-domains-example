@@ -29,12 +29,6 @@ defmodule BlogzWeb.Router do
     # don't set any pipelines or plugs at this scope level (here),
     # unless you want it to apply to all of them nested inside this.
 
-    scope "/" do
-      pipe_through :browser
-
-      get "/", PageController, :home
-    end
-
     ## Default phx.gen.auth routes
     scope "/" do
       pipe_through [:browser, :redirect_if_user_is_authenticated]
@@ -57,7 +51,27 @@ defmodule BlogzWeb.Router do
         on_mount: [{BlogzWeb.UserAuth, :ensure_authenticated}] do
         live "/users/settings", UserSettingsLive, :edit
         live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+
+        live "/blogs", BlogLive.Index, :index
+        live "/blogs/new", BlogLive.Index, :new
+        live "/blogs/:id/edit", BlogLive.Index, :edit
+
+        live "/blogs/:blog_id/posts/new", BlogPostLive.Index, :new
+        live "/blogs/:blog_id/posts/:id/edit", BlogPostLive.Index, :edit
+
+        live "/blogs/:blog_id/posts/:id/show/edit", BlogPostLive.Show, :edit
       end
+    end
+
+    scope "/" do
+      pipe_through :browser
+
+      live_session :public_current_user,
+        on_mount: [{BlogzWeb.UserAuth, :mount_current_user}] do
+          live "/", BlogLive.Index, :index
+          live "/blogs/:blog_id", BlogPostLive.Index, :index
+          live "/blogs/:blog_id/posts/:post_id", BlogPostLive.Show, :show
+        end
     end
 
     scope "/" do
@@ -76,9 +90,9 @@ defmodule BlogzWeb.Router do
   # A catch-all scope for any other hosts (custom domains)
   scope "/", BlogzWeb do
     pipe_through [:browser, :custom_domains]
-    live_session :custom_domain_blog, on_mount: [{BlogzWeb.LiveviewCustomDomains, :assign_custom_domain}] do
-      live "/", BlogLive, :index
-      live "/:post_slug", BlogPostLive, :index
+    live_session :custom_domain_blog, on_mount: [{BlogzWeb.LiveviewCustomDomains, :load_blog_for_custom_domain}] do
+      live "/", CustomDomainBlogLive, :index
+      live "/:post_slug", CustomDomainBlogPostLive, :index
     end
   end
 
