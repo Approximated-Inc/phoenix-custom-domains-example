@@ -37,7 +37,8 @@ defmodule Blogz.Blogs do
   """
   def get_blog!(id), do: Repo.get!(Blog, id)
 
-  def get_blog_by_custom_domain!(custom_domain), do: Repo.get_by!(Blog, custom_domain: custom_domain)
+  def get_blog_by_custom_domain!(custom_domain),
+    do: Repo.get_by!(Blog, custom_domain: custom_domain)
 
   @doc """
   Creates a blog.
@@ -53,6 +54,7 @@ defmodule Blogz.Blogs do
   """
   def create_blog(user_id, attrs \\ %{}) do
     user = Blogz.Accounts.get_user!(user_id)
+
     %Blog{}
     |> Blog.changeset(attrs)
     |> Ecto.Changeset.put_assoc(:user, user)

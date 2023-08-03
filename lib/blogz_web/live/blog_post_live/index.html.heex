@@ -40,13 +40,25 @@
   <%= for {dom_id, post} <- @streams.blog_posts do %>
     <div id={dom_id} class="pt-4 mt-4 max-w-3xl border-t">
       <div class=""><%= post.title %></div>
-      <div class="text-sm mt-1 mb-2 text-gray-500"><%= "#{String.slice(post.content, 0..140)}..." %></div>
-      <.link class="text-xs text-gray-500 hover:text-gray-800" navigate={~p"/blogs/#{@blog_id}/posts/#{post.id}"}>Read Post</.link>
+      <div class="text-sm mt-1 mb-2 text-gray-500">
+        <%= "#{String.slice(post.content, 0..140)}..." %>
+      </div>
+      <.link
+        class="text-xs text-gray-500 hover:text-gray-800"
+        navigate={~p"/blogs/#{@blog_id}/posts/#{post.id}"}
+      >
+        Read Post
+      </.link>
     </div>
   <% end %>
 <% end %>
 
-<.modal :if={@live_action in [:new, :edit]} id="blog_post-modal" show on_cancel={JS.navigate(~p"/blogs/#{@blog_id}")}>
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="blog_post-modal"
+  show
+  on_cancel={JS.navigate(~p"/blogs/#{@blog_id}")}
+>
   <.live_component
     module={BlogzWeb.BlogPostLive.FormComponent}
     id={@blog_post.id || :new}

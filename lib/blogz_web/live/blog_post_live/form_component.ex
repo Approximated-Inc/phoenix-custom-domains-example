@@ -69,7 +69,11 @@ defmodule BlogzWeb.BlogPostLive.FormComponent do
   end
 
   defp save_blog_post(socket, :new, blog_post_params) do
-    case BlogPosts.create_blog_post(socket.assigns.blog_id, socket.assigns.user_id, blog_post_params) do
+    case BlogPosts.create_blog_post(
+           socket.assigns.blog_id,
+           socket.assigns.user_id,
+           blog_post_params
+         ) do
       {:ok, blog_post} ->
         notify_parent({:saved, blog_post})
 

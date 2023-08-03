@@ -58,6 +58,28 @@ defmodule BlogzWeb.BlogLive.FormComponent do
       {:ok, blog} ->
         notify_parent({:saved, blog})
 
+        old_cd = socket.assigns.blog.custom_domain
+
+        # Update the Approximated.app virtual host for the custom domain, if there is one.
+        # We handle this in a task so that you don't need an account to run this example.
+        Task.start(fn ->
+          cond do
+            # If the blog custom domain was non-nil/empty and now it is nil or empty,
+            # delete the Approximated virtual host instead of updating it
+            (is_nil(blog.custom_domain) or String.trim(blog.custom_domain) == "") and
+                (!is_nil(old_cd) and String.trim(old_cd) != "") ->
+              Blogz.Approximated.delete_vhost(old_cd)
+
+            # If the new one is different from the old, update it
+            blog.custom_domain != old_cd ->
+              Blogz.Approximated.update_vhost(old_cd, blog.custom_domain)
+
+            # Otherwise do nothing (was blank before, is blank now)
+            true ->
+              nil
+          end
+        end)
+
         {:noreply,
          socket
          |> put_flash(:info, "Blog updated successfully")
@@ -69,10 +91,17 @@ defmodule BlogzWeb.BlogLive.FormComponent do
   end
 
   defp save_blog(socket, :new, blog_params) do
-
     case Blogs.create_blog(socket.assigns.user_id, blog_params) do
       {:ok, blog} ->
         notify_parent({:saved, blog})
+
+        # Create an Approximated virtual host to route and secure the custom domain.
+        # We handle this in a task so that you don't need an account to run this example.
+        unless is_nil(blog.custom_domain) or String.trim(blog.custom_domain) == "" do
+          Task.start(fn ->
+            Blogz.Approximated.create_vhost(blog.custom_domain)
+          end)
+        end
 
         {:noreply,
          socket

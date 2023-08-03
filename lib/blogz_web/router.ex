@@ -41,14 +41,13 @@ defmodule BlogzWeb.Router do
   # Also note, the host list will also try to use these as prefixes.
   # so if you put www, it will match to www.<anything>.
   #
-  # Example primary hosts list (set in env): ["www.yourapp.com", "yourapp.com", "localhost"]
+  # Example primary hosts list: ["www.yourapp.com", "yourapp.com", "localhost"]
   #
   # An easy way to test the custom domain side of things locally, in dev mode:
   # 1. set a blog custom domain as whatever the primary domain is (for instance, localhost)
   # 2. change the host list below to an empty list
   # 3. Reload the "/" route in your browser, it should load the matching blog only now
   scope "/", BlogzWeb, host: Application.compile_env(:blogz, :primary_domains, ["localhost"]) do
-
     # don't set any pipelines or plugs at this scope level (here),
     # unless you want it to apply to all of them nested inside this.
 
@@ -96,10 +95,10 @@ defmodule BlogzWeb.Router do
 
       live_session :public_current_user,
         on_mount: [{BlogzWeb.UserAuth, :mount_current_user}] do
-          live "/", BlogLive.Index, :index
-          live "/blogs/:blog_id", BlogPostLive.Index, :index
-          live "/blogs/:blog_id/posts/:post_id", BlogPostLive.Show, :show
-        end
+        live "/", BlogLive.Index, :index
+        live "/blogs/:blog_id", BlogPostLive.Index, :index
+        live "/blogs/:blog_id/posts/:post_id", BlogPostLive.Show, :show
+      end
     end
 
     # More default phx.gen.auth routes
@@ -140,13 +139,10 @@ defmodule BlogzWeb.Router do
       # Layout module located in blogz_web/components/layouts.ex below the default module
       layout: {BlogzWeb.CustomDomainLayouts, :root}
     ] do
-
       # The blog index/home page listing posts
       live "/", CustomDomainBlogLive, :index
       # An individual post loaded by post slug
       live "/:post_slug", CustomDomainBlogPostLive, :index
     end
   end
-
-
 end

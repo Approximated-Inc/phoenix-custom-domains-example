@@ -42,6 +42,12 @@ defmodule BlogzWeb.BlogLive.Index do
     blog = Blogs.get_blog!(id)
     {:ok, _} = Blogs.delete_blog(blog)
 
+    Task.start(fn ->
+      unless is_nil(blog.custom_domain) or String.trim(blog.custom_domain) == "" do
+        Blogz.Approximated.delete_vhost(blog.custom_domain)
+      end
+    end)
+
     {:noreply, stream_delete(socket, :blogs, blog)}
   end
 end

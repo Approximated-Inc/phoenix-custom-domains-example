@@ -1,12 +1,12 @@
 <.header>
   Listing Blogs
-    <:actions>
-      <%= if assigns[:current_user] do %>
-        <.link patch={~p"/blogs/new"}>
-          <.button>New Blog</.button>
-        </.link>
-      <% end %>
-    </:actions>
+  <:actions>
+    <%= if assigns[:current_user] do %>
+      <.link patch={~p"/blogs/new"}>
+        <.button>New Blog</.button>
+      </.link>
+    <% end %>
+  </:actions>
 </.header>
 
 <%= if assigns[:current_user] do %>
@@ -23,14 +23,14 @@
       </div>
       <.link patch={~p"/blogs/#{blog}/edit"}>Edit</.link>
     </:action>
-      <:action :let={{id, blog}}>
-        <.link
-          phx-click={JS.push("delete", value: %{id: blog.id}) |> hide("##{id}")}
-          data-confirm="Are you sure?"
-        >
-          Delete
-        </.link>
-      </:action>
+    <:action :let={{id, blog}}>
+      <.link
+        phx-click={JS.push("delete", value: %{id: blog.id}) |> hide("##{id}")}
+        data-confirm="Are you sure?"
+      >
+        Delete
+      </.link>
+    </:action>
   </.table>
 <% else %>
   <.table

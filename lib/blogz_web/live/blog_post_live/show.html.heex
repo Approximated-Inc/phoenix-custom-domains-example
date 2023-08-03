@@ -2,7 +2,10 @@
   <%= @blog_post.title %>
   <:actions>
     <%= if assigns[:current_user] do %>
-      <.link patch={~p"/blogs/#{@blog_id}/posts/#{@blog_post}/show/edit"} phx-click={JS.push_focus()}>
+      <.link
+        patch={~p"/blogs/#{@blog_id}/posts/#{@blog_post}/show/edit"}
+        phx-click={JS.push_focus()}
+      >
         <.button>Edit blog_post</.button>
       </.link>
     <% end %>
@@ -15,7 +18,12 @@
 
 <.back navigate={~p"/blogs/#{@blog_id}"}>Back to posts</.back>
 
-<.modal :if={@live_action == :edit} id="blog_post-modal" show on_cancel={JS.patch(~p"/blogs/#{@blog_id}/posts/#{@blog_post}")}>
+<.modal
+  :if={@live_action == :edit}
+  id="blog_post-modal"
+  show
+  on_cancel={JS.patch(~p"/blogs/#{@blog_id}/posts/#{@blog_post}")}
+>
   <.live_component
     module={BlogzWeb.BlogPostLive.FormComponent}
     id={@blog_post.id}

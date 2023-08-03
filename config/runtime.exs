@@ -20,6 +20,9 @@ if System.get_env("PHX_SERVER") do
   config :blogz, BlogzWeb.Endpoint, server: true
 end
 
+config :blogz,
+  apx_api_key: System.get_env("APX_API_KEY")
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||

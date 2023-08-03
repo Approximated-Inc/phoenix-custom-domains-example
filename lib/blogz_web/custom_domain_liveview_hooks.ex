@@ -14,6 +14,7 @@ defmodule BlogzWeb.CustomDomainLiveviewHooks do
     # This will return an Ecto.NoResultsError if there's no match,
     # which Phoenix will convert to a 404 response
     blog = Blogs.get_blog_by_custom_domain!(Map.get(session, "custom_domain"))
+
     {
       :cont,
       assign(

@@ -13,12 +13,12 @@ defmodule BlogzWeb.BlogLive.Show do
   def handle_params(%{"id" => id}, _, socket) do
     blog = Blogs.get_blog!(id)
     posts = BlogPosts.list_blog_posts(blog.id)
+
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
      |> assign(:blog, blog)
-     |> stream(:posts, posts)
-    }
+     |> stream(:posts, posts)}
   end
 
   defp page_title(:show), do: "Show Blog"
