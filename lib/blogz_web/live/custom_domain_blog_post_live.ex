@@ -4,8 +4,6 @@ defmodule BlogzWeb.CustomDomainBlogPostLive do
 
   def render(assigns) do
     ~H"""
-    <h1 class="text-xl font-bold mb-4 border-b pb-4"><%= @blog.name %></h1>
-
         <div class=""><%= @post.title %></div>
         <div class="text-sm mt-1 mb-2 text-gray-500"><%= @post.content %></div>
     """

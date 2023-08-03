@@ -14,8 +14,10 @@ defmodule BlogzWeb.CustomDomainsPlug do
     # which we're using to route requests and manage SSL certs for custom domains.
     # If there is no header, it uses the conn.host.
     case apx_incoming_host do
-      false -> put_session(conn, :custom_domain, conn.host)
-      _ -> put_session(conn, :custom_domain, apx_incoming_host)
+      false ->
+        put_session(conn, :custom_domain, conn.host)
+      _ ->
+        put_session(conn, :custom_domain, apx_incoming_host)
     end
   end
 end

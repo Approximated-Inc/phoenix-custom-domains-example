@@ -4,13 +4,11 @@ defmodule BlogzWeb.CustomDomainBlogLive do
 
   def render(assigns) do
     ~H"""
-    <h1 class="text-xl font-bold"><%= @blog.name %></h1>
-
     <%= for {dom_id, post} <- @streams.blog_posts do %>
-      <div id={dom_id} class="pt-4 mt-4 max-w-3xl border-t">
+      <div id={dom_id} class="pt-4 mt-4 max-w-3xl">
         <div class=""><%= post.title %></div>
         <div class="text-sm mt-1 mb-2 text-gray-500"><%= "#{String.slice(post.content, 0..140)}..." %></div>
-        <.link class="text-xs text-gray-500 hover:text-gray-800" navigate={~p"/#{post.slug}"}>Read Post</.link>
+        <.link class="text-xs text-gray-500 hover:text-gray-800" href={~p"/#{post.slug}"}>Read Post</.link>
       </div>
     <% end %>
     """
