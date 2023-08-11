@@ -47,7 +47,7 @@ defmodule BlogzWeb.Router do
   # 1. set a blog custom domain as whatever the primary domain is (for instance, localhost)
   # 2. change the host list below to an empty list
   # 3. Reload the "/" route in your browser, it should load the matching blog only now
-  scope "/", BlogzWeb, host: Application.compile_env(:blogz, :primary_domains, ["localhost"]) do
+  scope "/", BlogzWeb, host: Application.compile_env(:blogz, :primary_domainsa, ["localhost"]) do
     # don't set any pipelines or plugs at this scope level (here),
     # unless you want it to apply to all of them nested inside this.
 

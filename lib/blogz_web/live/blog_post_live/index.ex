@@ -16,6 +16,7 @@ defmodule BlogzWeb.BlogPostLive.Index do
       |> stream(:blog_posts, blog_posts)
       |> assign(:blog_id, blog_id)
       |> assign(:blog, blog)
+      |> assign(:guests, [])
     }
   end
 
@@ -60,5 +61,12 @@ defmodule BlogzWeb.BlogPostLive.Index do
     {:ok, _} = BlogPosts.delete_blog_post(blog_post)
 
     {:noreply, stream_delete(socket, :blog_posts, blog_post)}
+  end
+
+  def handle_event("sign guestbook", %{"name" => name}, socket) do
+    {:noreply,
+     socket
+     |> assign(:guests, [name | socket.assigns.guests])
+    }
   end
 end
