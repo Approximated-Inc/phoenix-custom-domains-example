@@ -1,4 +1,4 @@
-### This is an example repo for how to add custom domains as a feature to a Phoenix app
+### Example repo for adding custom domains to an Elixir Phoenix app
 
 The example is a blog hosting platform, where you can create blogs, blog posts, and connect a custom domain or subdomain to a blog.
 
