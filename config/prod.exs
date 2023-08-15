@@ -7,6 +7,14 @@ import Config
 # before starting your production server.
 config :blogz, BlogzWeb.Endpoint, cache_static_manifest: "priv/static/cache_manifest.json"
 
+# Setting primary domains, needs to be done at compile time for router host matching
+# Feel free to change thes for your app
+config :blogz,
+  primary_domains: [
+    System.get_env("BLOGZ_PRIMARY_DOMAIN", "localhost"),
+    "www.#{System.get_env("BLOGZ_PRIMARY_DOMAIN", "localhost")}"
+  ]
+
 # Configures Swoosh API Client
 config :swoosh, api_client: Swoosh.ApiClient.Finch, finch_name: Blogz.Finch
 
