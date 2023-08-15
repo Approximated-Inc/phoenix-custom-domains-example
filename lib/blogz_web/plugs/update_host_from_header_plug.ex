@@ -1,4 +1,4 @@
-defmodule BlogzWeb.UpdateHostFromApxHeaderPlug do
+defmodule BlogzWeb.UpdateHostFromHeaderPlug do
   @moduledoc """
   Sometimes we want to:
   1. Put a reverse proxy in front of everything
@@ -33,8 +33,6 @@ defmodule BlogzWeb.UpdateHostFromApxHeaderPlug do
       Enum.find(conn.req_headers, {false, false}, fn {header, _value} ->
         header == "apx-incoming-host"
       end)
-
-    IO.inspect(apx_incoming_host)
 
     case apx_incoming_host do
       false ->

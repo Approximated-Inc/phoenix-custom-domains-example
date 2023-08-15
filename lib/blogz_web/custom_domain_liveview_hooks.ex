@@ -6,10 +6,6 @@ defmodule BlogzWeb.CustomDomainLiveviewHooks do
   import Phoenix.Component
   alias Blogz.Blogs
 
-  def on_mount(:assign_custom_domain, _params, session, socket) do
-    {:cont, assign(socket, :custom_domain, Map.get(session, "custom_domain"))}
-  end
-
   def on_mount(:load_blog_for_custom_domain, _params, session, socket) do
     # This will return an Ecto.NoResultsError if there's no match,
     # which Phoenix will convert to a 404 response
