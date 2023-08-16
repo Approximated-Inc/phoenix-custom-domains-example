@@ -13,7 +13,7 @@ defmodule BlogzWeb.CustomDomainBlogLive do
           <div class="text-sm mt-1 mb-2 text-gray-500">
             <%= "#{String.slice(post.content, 0..140)}..." %>
           </div>
-          <.link class="text-xs text-gray-500 hover:text-gray-800" href={~p"/#{post.slug}"}>
+          <.link class="text-xs text-gray-500 hover:text-gray-800" navigate={~p"/#{post.slug}"}>
             Read Post
           </.link>
         </div>
