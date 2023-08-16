@@ -41,7 +41,7 @@ defmodule BlogzWeb.OriginChecks do
 
   # A second func definition with just the host as arg,
   # so we can have a smaller cache memory footprint
-  defp origin_allowed_just_host?(host) when is_binary(host) do
+  def origin_allowed_just_host?(host) when is_binary(host) do
     Enum.member?(Application.get_env(:blogz, :primary_domains), host)
     or Repo.exists?(from b in Blog, where: b.custom_domain == ^host)
   end
