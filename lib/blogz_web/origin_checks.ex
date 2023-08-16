@@ -18,13 +18,13 @@ defmodule BlogzWeb.OriginChecks do
   If called directly, this will run for *every* request and websocket connection though.
   For that reason, we use a function that caches the result of this instead for 10 mins.
   """
-  def origin_allowed?(%URI{host: host}) when is_binary(host) do
+  def origin_allowed?(%URI{host: host}) do
     origin_allowed?(host)
   end
 
   # A second func definition with just the host as arg,
   # so we can have a smaller cache memory footprint
-  def origin_allowed?(host) do
+  def origin_allowed?(host) when is_binary(host) do
     Enum.member?(Application.get_env(:blogz, :primary_domains), host)
     or Repo.exists?(from b in Blog, where: b.custom_domain == ^host)
   end
