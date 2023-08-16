@@ -17,8 +17,6 @@ if config_env() == :prod do
   database_path =
     System.get_env("DATABASE_PATH") || "blogz.db"
 
-  maybe_ipv6 = if System.get_env("ECTO_IPV6") in ~w(true 1), do: [:inet6], else: []
-
   config :blogz, Blogz.Repo,
     # ssl: true,
     database: database_path
@@ -40,7 +38,13 @@ if config_env() == :prod do
 
   config :blogz, BlogzWeb.Endpoint,
     url: [host: host, port: 443, scheme: "https"],
-    check_origin: false,
+    # You can use a dynamic check origin like this example below to
+    # perform a lookup of allowd primary and custom domains.
+    # Note: check out the OriginChecks file for notes on performance.
+    check_origin: {BlogzWeb.OriginChecks, :origin_allowed?, []},
+    # Or in theory, because we have csrf checks for both http requests AND websockets,
+    # we could get away with check_origin: false instead.
+    force_ssl: [host: nil],
     http: [
       # Enable IPv6 and bind on all interfaces.
       # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.

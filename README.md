@@ -51,7 +51,7 @@ scope "/", BlogzWeb, host: Application.compile_env(:blogz, :primary_domains, ["l
 end
 ```
 
-As long as you set your :primary_domains env variable (or you're on localhost), any request to one of those domains will end up matching inside there.
+As long as you set your :primary_domains env variable at compile time (or you're on localhost), any request to one of those domains will end up matching inside there.
 
 To catch requests for custom domains, we can have a second scope afterwards (very important it's after the first scope). 
 
@@ -136,6 +136,7 @@ layout: {BlogzWeb.CustomDomainLayouts, :root}
 
 
 ## Files to check out
+- [OriginChecks](lib/blogz_web/origin_checks.ex) - Contains the function we provide to our check_origin config, for dynamically checking if a request/websocket domain is allowed.
 - [CustomDomainsPlug](lib/blogz_web/plugs/custom_domains_plug.ex) - Sets the `custom_domain` session variable
 - [UpdateHostFromHeaderPlug](lib/blogz_web/plugs/update_host_from_header_plug.ex) - Replaces the conn.host with the value from a specific header, if it exists
 - [Router](lib/blogz_web/router.ex) - See the host matcher scope for primary domain, and custom domains scope
