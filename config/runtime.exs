@@ -41,7 +41,7 @@ if config_env() == :prod do
     # You can use a dynamic check origin like this example below to
     # perform a lookup of allowd primary and custom domains.
     # Note: check out the OriginChecks file for notes on performance.
-    check_origin: {BlogzWeb.OriginChecks, :origin_allowed?, []},
+    check_origin: {BlogzWeb.OriginChecks, :cache_origin_allowed?, []},
     # Or in theory, because we have csrf checks for both http requests AND websockets,
     # we could get away with check_origin: false instead.
     force_ssl: [host: nil],
