@@ -163,3 +163,6 @@ layout: {BlogzWeb.CustomDomainLayouts, :root}
   - That lets us avoid database lookups for the custom domain on every request, and the blog on every mount
   - This is definitely *not* required, but I wanted to show an easy example for how you *could* optimize for performance.
   - See [Elixir School's ETS post](https://elixirschool.com/en/lessons/storage/ets#example-ets-usage-13) to learn more
+- [Approximated](lib/blogz/approximated.ex) - An API client module for [Approximated](https://approximated.app), which we use to automate SSL provisioning.
+  - Everything in here runs in a Task.start and we don't care about failures, so that you can test this repo without an Approximated account if you want.
+- [Blog FormComponent](lib/blogz_web/live/blog_live/form_component.ex) - For reference on how to add/update/delete an entry on [Approximated](https://approximated.app) when a custom domain is set/changed/removed on a blog.
