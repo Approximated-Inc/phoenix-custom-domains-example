@@ -5,24 +5,27 @@ defmodule BlogzWeb.CustomDomainLiveviewHooks do
   """
   import Phoenix.Component
   alias Blogz.Blogs
+  alias Blogz.Blogs.Blog
 
   def on_mount(:load_blog_for_custom_domain, _params, session, socket) do
-    # This will return an Ecto.NoResultsError if there's no match,
-    # which Phoenix will convert to a 404 response
-    blog = Blogs.get_blog_by_custom_domain!(Map.get(session, "custom_domain"))
-
-    {
-      :cont,
-      assign(
-        socket,
-        %{
-          custom_domain: Map.get(session, "custom_domain"),
-          # for our use case, the blog struct is pretty lightweight
-          # so we assign the entire thing. In your use case, you might want to
-          # assign just the id and load it as needed in the actual liveview.
-          blog: blog
+    case Blogz.SimpleCache.get(Blogs, :get_blog_by_custom_domain, [Map.get(session, "custom_domain")], [ttl: 300]) do
+      nil ->
+        raise Ecto.NoResultsError
+      %Blog{} = blog ->
+        IO.inspect("Found blog for: #{blog.custom_domain}")
+        {
+          :cont,
+          assign(
+            socket,
+            %{
+              custom_domain: Map.get(session, "custom_domain"),
+              # for our use case, the blog struct is pretty lightweight
+              # so we assign the entire thing. In your use case, you might want to
+              # assign just the id and load it as needed in the actual liveview.
+              blog: blog
+            }
+          )
         }
-      )
-    }
+    end
   end
 end

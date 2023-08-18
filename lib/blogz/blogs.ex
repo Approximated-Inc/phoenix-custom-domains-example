@@ -37,8 +37,8 @@ defmodule Blogz.Blogs do
   """
   def get_blog!(id), do: Repo.get!(Blog, id)
 
-  def get_blog_by_custom_domain!(custom_domain),
-    do: Repo.get_by!(Blog, custom_domain: custom_domain)
+  def get_blog_by_custom_domain(custom_domain),
+    do: Repo.get_by(Blog, custom_domain: custom_domain)
 
   @doc """
   Creates a blog.
