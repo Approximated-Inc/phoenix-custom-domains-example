@@ -47,6 +47,8 @@ defmodule BlogzWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
+  # This plug below updates the host based on a header,
+  # See the module for reasons why you might want this for custom domains
   plug BlogzWeb.UpdateHostFromHeaderPlug
   plug BlogzWeb.Router
 end

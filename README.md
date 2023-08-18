@@ -110,10 +110,12 @@ In this example repo we have 2 plugs that we use for custom domains. These apply
   - If the header does *not* exist, the conn continues as normal.
   - Here's why:
     - If you have an existing reverse proxy setup, they often won't accept unknown custom domains by default. 
-    - Rather than update your reverse proxy, this approach can be much easier to get going.
+    - Rather than update your reverse proxy, you may want the request host to instead be changed to your primary domain (which the reverse proxy already accepts) before it hits your server.
     - How could a custom domain request have it's host rewritten before hitting your reverse proxy?
       - A service like Approximated can do that automatically, by rewriting the request in-flight.
   - We've placed this plug in endpoint.ex just before the router, so that no matter what, the conn.host is set to the custom domain before hitting the router scopes.
+  - You can safely remove this plug entirely from your endpoint.ex if you don't want to use this approach.
+  - For our example, we keep it because it will work either way
 
 ### The on_mount hook
 There is an on_mount hook called `:load_blog_for_custom_domain`:
