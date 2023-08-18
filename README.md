@@ -141,6 +141,14 @@ layout: {BlogzWeb.CustomDomainLayouts, :root}
   - They mostly don't matter for this example, we just need them to setup a blog with a custom domain
   - Anything for loading a blog/post with a custom domain is a module prefixed with CustomDomain.
 
+## Known Bugs
+- Currently, the live_reload websocket is closing immediately in dev mode if you open the app in the browser from any domain but the primary domain.
+  - You're probably not doing that anyways, but just so you're aware
+  - It means you'll have to manually reload the page after changes if you're developing this in dev mode, and viewing on a custom domain.
+  - It does **not** affect other websocket connections such as channels or liveviews
+  - Since live reload isn't used in prod, it's also not an issue there.
+
+
 ## Files to check out
 - [OriginChecks](lib/blogz_web/origin_checks.ex) - Contains the function we provide to our check_origin config, for dynamically checking if a request/websocket domain is allowed.
 - [CustomDomainsPlug](lib/blogz_web/plugs/custom_domains_plug.ex) - Sets the `custom_domain` session variable
