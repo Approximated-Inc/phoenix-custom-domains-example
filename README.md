@@ -15,13 +15,24 @@ It's recommended that you try this on a publicly accessible server though, so th
 
 ## The basics of this example
 
-This example app is mostly just a default Phoenix 1.7 app, with a couple of generated contexts for blogs and blog_posts and a few minor changes to those.
+This example app is mostly just a default Phoenix 1.7 app:
+- It uses phx.gen.auth
+- Generated context/schema/LV for Blogs and blog_posts with a few minor changes that don't really matter for learning about custom domains.
+
+For links to the files related directly to implementing custom domains, see the Files to Check Out section at the bottom of this readme.
 
 A blog in this app has:
 - A string field for name
 - A string field for custom domain
 - A belongs_to assoc for a user
 - A has_many assoc for blog_posts
+- The standard CRUD liveviews to with a few modifications just for presentation
+
+A blog post in this app has:
+- A string field for title
+- A text field for content
+- A belongs_to for user
+- A belongs_to for blog
 - The standard CRUD liveviews to with a few modifications just for presentation
 
 ## Handling Custom Domains
@@ -109,7 +120,7 @@ There is an on_mount hook called `:load_blog_for_custom_domain`:
 - We call this in the router live_session for the custom domain liveview routes.
 - It finds the blog with the matching custom domain and assigns it to the liveview. 
 - If it can't find a blog for that custom domain then it will bubble up a not found error, which Phoenix will treat as a 404
-- In this example, the blog is just a small struct, in real apps you may want to assign only the ID or handle it in some other way to keep your assigns small.
+- In this example, the blog is just a small struct, in your own app you may want to assign only the ID or handle it in some other way to keep your assigns small.
 
 ### Using a different layout for custom domains
 In this example, we want the blog to load under the user's custom domain without the primary apps layout.
@@ -121,19 +132,14 @@ layout: {BlogzWeb.CustomDomainLayouts, :root}
 ```
 
 ## Things to know
-- This is a simple example, but this approach could be applied to many scenarios besides blogs and blog posts.
-- I highly recommend using a service like [approximated.app](https://approximated.app) in front for custom domains, it makes many things, like managing SSL certs, \*much\* easier.
+- This is a simple example, but this approach could be applied to most scenarios, not just blogs and blog posts.
+- Highly recommend using a service like [approximated.app](https://approximated.app) in front for custom domains, it makes many things, like managing SSL certs, \*much\* easier.
 - We need to remember that we're not restricting requests to a single domain, so: 
-  - Take any precautions you need for your use case to ensure security for your app.
-  - We don't handle this in this example repo, because this will require different approaches according to your app.
-  - However, anyone can spoof the host header for any request anyways, and that's all we're dealing with. So there may be nothing extra you need to do.
-- Currently, the live_reload websocket is closing early in dev mode when loading from a custom domain.
-  - So live_reload won't work when loading from a custom domain in dev mode (which you're probably not doing anyways)
-  - This will hopefully be sorted out soon, but it does not affect other websockets like for liveviews.
+  - Make sure to consider any precautions your specific use case might require to ensure security for your app.
+  - In this example, we're dynamically checking the origin for http requests and websockets, as well as using CSRF tokens for both.
 - There are several liveviews for managing blogs and blog posts on the primary domain
   - They mostly don't matter for this example, we just need them to setup a blog with a custom domain
   - Anything for loading a blog/post with a custom domain is a module prefixed with CustomDomain.
-
 
 ## Files to check out
 - [OriginChecks](lib/blogz_web/origin_checks.ex) - Contains the function we provide to our check_origin config, for dynamically checking if a request/websocket domain is allowed.
@@ -144,4 +150,8 @@ layout: {BlogzWeb.CustomDomainLayouts, :root}
 - [CustomDomainBlogLive](lib/blogz_web/live/custom_domain_blog_live.ex) - Liveview that loads the index page for a blog on a custom domain.
 - [CustomDomainBlogPostLive](lib/blogz_web/live/custom_domain_blog_post_live.ex) - Liveview that loads a specific blog post by it's slug on a custom domain.
 - [Endpoint](lib/blogz_web/endpoint.ex) - Just to note the UpdateHostFromHeaderPlug before the router.
-
+- [SimpleCache](lib/blogz/simple_cache.ex) - A module for caching any function results, looked up by the Module-Function-Args combo. 
+  - We use this to cache the dynamic origin checks, and to cache the blog struct (only 2 fields) for a few minutes
+  - That lets us avoid database lookups for the custom domain on every request, and the blog on every mount
+  - This is definitely *not* required, but I wanted to show an easy example for how you *could* optimize for performance.
+  - See [Elixir School's ETS post](https://elixirschool.com/en/lessons/storage/ets#example-ets-usage-13) to learn more

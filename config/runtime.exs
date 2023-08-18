@@ -7,7 +7,14 @@ import Config
 # any compile-time configuration in here, as it won't be applied.
 # The block below contains prod specific runtime configuration.
 
-config :blogz, BlogzWeb.Endpoint, server: true
+config :blogz, BlogzWeb.Endpoint,
+  server: true,
+  # You can use a dynamic check origin like this example below to
+  # perform a lookup of allowd primary and custom domains.
+  # Note: check out the OriginChecks file for notes on performance.
+  # Or in theory, because we have csrf checks for both http requests AND websockets,
+  # we could get away with check_origin: false instead.
+  check_origin: {BlogzWeb.OriginChecks, :cache_origin_allowed?, []}
 
 config :blogz,
   apx_api_key: System.get_env("APX_API_KEY")
@@ -37,12 +44,7 @@ if config_env() == :prod do
 
   config :blogz, BlogzWeb.Endpoint,
     url: [host: host, port: 443, scheme: "https"],
-    # You can use a dynamic check origin like this example below to
-    # perform a lookup of allowd primary and custom domains.
-    # Note: check out the OriginChecks file for notes on performance.
-    check_origin: {BlogzWeb.OriginChecks, :cache_origin_allowed?, []},
-    # Or in theory, because we have csrf checks for both http requests AND websockets,
-    # we could get away with check_origin: false instead.
+    # If we don't set host: nil for force_ssl, custom domains won't work
     force_ssl: [host: nil],
     http: [
       # Enable IPv6 and bind on all interfaces.

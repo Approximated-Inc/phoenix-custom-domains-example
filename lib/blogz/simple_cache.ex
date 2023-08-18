@@ -6,8 +6,24 @@ defmodule Blogz.SimpleCache do
   """
 
   @doc """
-  Retrieve a cached value or apply the given function caching and returning
-  the result.
+  Run a function, cache it's value in ETS, then return the value
+  if the exact combination of arguments haven't been run before (or it's past the TTL).
+
+  If it has been run before, and we're within the TTL (default 1 hour),
+  return the previously cached result immediately instead.
+
+  ## Parameters
+    - mod: A module like Blogz.Blogs
+    - fun: The atomic name for the function you want to call, like :get_blog_by_custom_domain
+    - args: A list of args that you want to feed the function in the order it's expecting, like ["acustomdomain.com"]
+    - opts: (optional) A keyword list of options for the caching function itself, like [ttl: 300]
+
+  ## Examples
+    iex> Blogz.SimpleCache.get(Blogz.Blogs, :get_blog_by_custom_domain, ["existingcustomdomain.com"], [ttl: 300])
+    %Blogz.Blogs.Blog{}
+
+    iex> Blogz.SimpleCache.get(Blogz.Blogs, :get_blog_by_custom_domain, ["notinourdatabse.com"], [ttl: 300])
+    nil
   """
   def get(mod, fun, args, opts \\ []) do
     case lookup(mod, fun, args) do
