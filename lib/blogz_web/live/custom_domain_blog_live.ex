@@ -4,7 +4,6 @@ defmodule BlogzWeb.CustomDomainBlogLive do
 
   def render(assigns) do
     ~H"""
-
     <div>
       <p class="hidden only:block">No blog posts yet!</p>
       <%= for {dom_id, post} <- @streams.blog_posts do %>
@@ -23,16 +22,12 @@ defmodule BlogzWeb.CustomDomainBlogLive do
     <div class="mt-8 pt-8 border-t">
       <h3 class="text-lg">Blog Guestbook</h3>
       <p class="text-xs text-gray-500 mb-4">
-        This is just here to show that liveview websockets work.<br>
+        This is just here to show that liveview websockets work.<br />
         Names will disappear on reload because we don't save them.
       </p>
-      <form
-          id="guest-form"
-          phx-submit="sign guestbook"
-          class="mb-4"
-        >
-          <input type="text" name="name" class="rounded" />
-          <.button>Sign Guestbook</.button>
+      <form id="guest-form" phx-submit="sign guestbook" class="mb-4">
+        <input type="text" name="name" class="rounded" />
+        <.button>Sign Guestbook</.button>
       </form>
       <%= for guest <- @guests do %>
         <div class="mt-4"><%= guest %></div>
@@ -47,14 +42,12 @@ defmodule BlogzWeb.CustomDomainBlogLive do
     {:ok,
      socket
      |> stream(:blog_posts, blog_posts)
-     |> assign(:guests, [])
-    }
+     |> assign(:guests, [])}
   end
 
   def handle_event("sign guestbook", %{"name" => name}, socket) do
     {:noreply,
      socket
-     |> assign(:guests, [name | socket.assigns.guests])
-    }
+     |> assign(:guests, [name | socket.assigns.guests])}
   end
 end

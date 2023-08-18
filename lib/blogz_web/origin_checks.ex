@@ -22,7 +22,6 @@ defmodule BlogzWeb.OriginChecks do
     origin_allowed_just_host?(host)
   end
 
-
   @doc """
   This takes in a URI, such as the check_origin MFA option provides,
   and checks against our list of primary domains and custom domains.
@@ -36,13 +35,13 @@ defmodule BlogzWeb.OriginChecks do
   """
 
   def cache_origin_allowed?(%URI{} = uri) do
-    Blogz.SimpleCache.get(__MODULE__, :origin_allowed_just_host?, [uri.host], [ttl: 600])
+    Blogz.SimpleCache.get(__MODULE__, :origin_allowed_just_host?, [uri.host], ttl: 600)
   end
 
   # A second func definition with just the host as arg,
   # so we can have a smaller cache memory footprint
   def origin_allowed_just_host?(host) when is_binary(host) do
-    Enum.member?(Application.get_env(:blogz, :primary_domains), host)
-    or Repo.exists?(from b in Blog, where: b.custom_domain == ^host)
+    Enum.member?(Application.get_env(:blogz, :primary_domains), host) or
+      Repo.exists?(from b in Blog, where: b.custom_domain == ^host)
   end
 end

@@ -12,16 +12,13 @@ defmodule Blogz.SimpleCache do
   def get(mod, fun, args, opts \\ []) do
     case lookup(mod, fun, args) do
       nil ->
-        IO.inspect("Not cached")
         ttl = Keyword.get(opts, :ttl, 3600)
         cache_apply(mod, fun, args, ttl)
 
       result ->
-        IO.inspect("Cached")
         result
     end
   end
-
 
   # Lookup a cached result and check the freshness
   defp lookup(mod, fun, args) do

@@ -66,7 +66,6 @@ defmodule BlogzWeb.BlogPostLive.Index do
   def handle_event("sign guestbook", %{"name" => name}, socket) do
     {:noreply,
      socket
-     |> assign(:guests, [name | socket.assigns.guests])
-    }
+     |> assign(:guests, [name | socket.assigns.guests])}
   end
 end
